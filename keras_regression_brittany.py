@@ -44,16 +44,18 @@ def wider_model():
 # fix random seed for reproducibility
 seed = 7
 numpy.random.seed(seed)
-# evaluate model with standardized dataset
-estimator = KerasRegressor(build_fn=wider_model, epochs=300, batch_size=5, verbose=1)
 
-kfold = KFold(n_splits=20, random_state=seed)
-results = cross_val_score(estimator, X, Y, cv=kfold)
-print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+def usekfold():
+    # evaluate model with standardized dataset
+    estimator = KerasRegressor(build_fn=wider_model, epochs=300, batch_size=5, verbose=1)
+
+    kfold = KFold(n_splits=20, random_state=seed)
+    results = cross_val_score(estimator, X, Y, cv=kfold)
+    print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
 
 def doitmyway():
-# evaluate model with standardized dataset 
+    # evaluate model with standardized dataset 
     estimators = []
     estimators.append(('standardize', StandardScaler()))
     nn_estimator = ('mlp', KerasRegressor(build_fn=wider_model, epochs=2500, batch_size=5, verbose=1))
@@ -62,10 +64,14 @@ def doitmyway():
 
 #X_train = X[0:800,:]
 #Y_train = Y[0:800]
+    print( "Let's train on ALL the data (yes, we should really be holding something back for testing. TBD" )
     pipeline.fit( X, Y )
 #result = pipeline.predict( X[800:,:] )
+    print( "OK, now that we've trained, let's see how well we have learned everything by running all the data through the trained network." )
     result = pipeline.predict( X )
+    print( "Now we'll enter that result into the last column of our dataframe..." )
     dataframe['keras'] = result
+    print( "And save it to a file called 'brittany_learned.csv'" )
 #numpy.append( dataset, result )
     dataframe.to_csv( "./brittany_learned.csv" )
 
@@ -74,4 +80,7 @@ def doitmyway():
 #kfold = KFold(n_splits=10, random_state=seed)
 #results = cross_val_score(pipeline, X, Y, cv=kfold)
 #print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+if __name__ == "__main__":
+    doitmyway()
 
