@@ -1,5 +1,12 @@
 #!/usr/bin/python
 
+"""
+This is a demo from https://machinelearningmastery.com/regression-tutorial-keras-deep-learning-library-python/.
+It uses a public dataset of Boston housing prices and uses a relatively small neural network to learn the data.
+This is a regression problem, not a classification problem. There are two models: the baseline & a wider network.
+It uses a built-in (Keras) K-Fold evaluation solution. 
+"""
+
 import numpy
 import pandas
 from keras.models import Sequential
