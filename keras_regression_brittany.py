@@ -11,12 +11,19 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 import pdb
 
+# Added this to see if theano is configured to use cuda or cpu.
+import theano
+print( theano.config.device )
+
 # load dataset
-dataframe = pandas.read_csv("brittany_numerical.csv", delim_whitespace=False, header=None)
+# the original file I was using had removed some alphanumeric data, partly to get something working quickly.
+# the polio...fullyer.csv file has 3 additional alpha cols converted to numbers and keeps the year column.
+dataframe = pandas.read_csv("polio_surveillance_numeric_fuller.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
 # split into input (X) and output (Y) variables
-X = dataset[:,0:26]
-Y = dataset[:,26]
+# the Y col is the final col. Could find that programmatically instead of hardcoding 30
+X = dataset[:,0:30]
+Y = dataset[:,30]
 
 #X = numpy.delete( X, 4, axis=1 )
 
@@ -34,7 +41,7 @@ def baseline_model():
 def wider_model():
     # create model
     model = Sequential()
-    model.add(Dense(52, input_dim=26, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(52, input_dim=30, kernel_initializer='normal', activation='relu'))
     model.add(Dense(20, kernel_initializer='normal', activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
     # Compile model
@@ -45,12 +52,18 @@ def wider_model():
 seed = 7
 numpy.random.seed(seed)
 
-def usekfold():
+def usekfold( num_splits ):
     # evaluate model with standardized dataset
-    estimator = KerasRegressor(build_fn=wider_model, epochs=300, batch_size=5, verbose=1)
+    # the original version here was not using pipeline and was producing bad results.
+    # My understanding is that that approach didn't normalize the data. The pipeline, mlp, etc.
+    # takes care of unnormalized input columns.
+    estimators = []
+    estimators.append(('standardize', StandardScaler()))
+    estimators.append(( 'mlp', KerasRegressor(build_fn=wider_model, epochs=500, batch_size=5, verbose=1) ) )
+    pipeline = Pipeline(estimators)
 
-    kfold = KFold(n_splits=20, random_state=seed)
-    results = cross_val_score(estimator, X, Y, cv=kfold)
+    kfold = KFold(n_splits=num_splits, random_state=seed, shuffle=True)
+    results = cross_val_score(pipeline, X, Y, cv=kfold)
     print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
 
@@ -82,5 +95,10 @@ def doitmyway():
 #print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
 if __name__ == "__main__":
-    doitmyway()
+    # "my way" trains on all data and tests aon all, putting 'learned' output as inserted final column. MSE calculation is left as manual
+    # step in post.
+    #doitmyway()
+    # K-fold evaluation wasn't working, but now is mostly fixed. Except it's producing 0.3 vs 0.03 that I get manually.
+    # Order-of-mag error may seem bad but it's way closer than I was getting.
+    usekfold( 5 )
 
