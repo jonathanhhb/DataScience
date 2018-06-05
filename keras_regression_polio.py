@@ -18,14 +18,18 @@ print( theano.config.device )
 # load dataset
 # the original file I was using had removed some alphanumeric data, partly to get something working quickly.
 # the polio...fullyer.csv file has 3 additional alpha cols converted to numbers and keeps the year column.
-dataframe = pandas.read_csv("polio_surveillance_numeric_fuller.csv", delim_whitespace=False, header=None)
+#dataframe = pandas.read_csv("polio_surveillance_numeric_fuller.csv", delim_whitespace=False, header=None)
+dataframe = pandas.read_csv("brittany_polio_sparse.csv", delim_whitespace=False, header=None)
 dataset = dataframe.values
 # split into input (X) and output (Y) variables
 # the Y col is the final col. Could find that programmatically instead of hardcoding 30
-X = dataset[:,0:30]
-Y = dataset[:,30]
+#X = dataset[:,0:30]
+X = dataset[:,0:7]
+num_input_cols = X.shape[1]
+orig_X = X
+#Y = dataset[:,30]
+Y = dataset[:,7]
 
-#X = numpy.delete( X, 4, axis=1 )
 
 # define base model
 def baseline_model():
@@ -41,9 +45,14 @@ def baseline_model():
 def wider_model():
     # create model
     model = Sequential()
-    model.add(Dense(52, input_dim=30, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(20, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(1, kernel_initializer='normal'))
+    num_input_cols = X.shape[1]
+    #model.add(Dense(52, input_dim=num_input_cols, kernel_initializer='normal', activation='relu'))
+    #model.add(Dense(200, input_dim=num_input_cols, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(200, input_dim=num_input_cols, activation='relu'))
+    #model.add(Dense(20, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(20, activation='relu'))
+    #model.add(Dense(1, kernel_initializer='normal'))
+    model.add(Dense(1) )
     # Compile model
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
@@ -59,11 +68,12 @@ def usekfold( num_splits ):
     # takes care of unnormalized input columns.
     estimators = []
     estimators.append(('standardize', StandardScaler()))
-    estimators.append(( 'mlp', KerasRegressor(build_fn=wider_model, epochs=500, batch_size=5, verbose=1) ) )
+    estimators.append(( 'mlp', KerasRegressor(build_fn=wider_model, epochs=1000, batch_size=5, verbose=1) ) )
     pipeline = Pipeline(estimators)
 
     kfold = KFold(n_splits=num_splits, random_state=seed, shuffle=True)
     results = cross_val_score(pipeline, X, Y, cv=kfold)
+    #pdb.set_trace()
     print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
 
@@ -71,7 +81,9 @@ def doitmyway():
     # evaluate model with standardized dataset 
     estimators = []
     estimators.append(('standardize', StandardScaler()))
-    nn_estimator = ('mlp', KerasRegressor(build_fn=wider_model, epochs=2500, batch_size=5, verbose=1))
+    #nn_estimator = ('mlp', KerasRegressor(build_fn=wider_model, epochs=2500, batch_size=5, verbose=1))
+    #build_fn=build_fn_reg, hidden_dims=hidden_dims, batch_size=batch_size, nb_epoch=nb_epoch)
+    nn_estimator = ('mlp', KerasRegressor(build_fn=wider_model, nb_epoch=2500, batch_size=5))
     estimators.append(nn_estimator)
     pipeline = Pipeline(estimators)
 
@@ -94,6 +106,7 @@ def doitmyway():
 #results = cross_val_score(pipeline, X, Y, cv=kfold)
 #print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
 
+cols_to_pare = [ 28, 20, 24, 11, 3, 6, 25, 12, 16, 13, 10, 26, 21, 19, 5, 23, 0, 4, 7, 2, 15, 14, 18, 8, 27, 1, 17, 22, 9 ]
 if __name__ == "__main__":
     # "my way" trains on all data and tests aon all, putting 'learned' output as inserted final column. MSE calculation is left as manual
     # step in post.
@@ -101,4 +114,16 @@ if __name__ == "__main__":
     # K-fold evaluation wasn't working, but now is mostly fixed. Except it's producing 0.3 vs 0.03 that I get manually.
     # Order-of-mag error may seem bad but it's way closer than I was getting.
     usekfold( 5 )
+
+    # let's iterate over all input columns, remove that column, do full test, and see what difference it makes.
+    #for x in range( 0,29 ):
+        #X = numpy.delete( orig_X, x, axis=1 )
+        #print( "Removed col " + str(x) )
+        #usekfold( 5 )
+    if False:
+        for x in cols_to_pare:
+        #X = numpy.delete( X, x, axis=1 )
+            X[:,x] = 0
+            print( "Removed (zeroed) col " + str(x) )
+            usekfold( 5 )
 
