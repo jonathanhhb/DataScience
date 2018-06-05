@@ -1,0 +1,10 @@
+{
+	"parameters": {
+		"Base_Infectivity": 0.04,
+		"Base_Incubation_Period": 1,
+		"Base_Infectious_Period": 40,
+		"Acquisition_Blocking_Immunity_Decay_Rate": 0.3,
+		"Acquisition_Blocking_Immunity_Duration_Before_Decay": 5
+	}
+}
+
