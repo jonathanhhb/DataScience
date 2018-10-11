@@ -93,7 +93,9 @@ def load_and_test():
         #infer = model.predict( datum )
         infer = loaded_model.predict_classes( datum.reshape((1,1,28,28)) )
         if infer[0] != np.argmax(Y_test[count]):
-            print( str(infer), str(np.argmax(Y_test[count])) ) 
+            print( "Neural Net thought this was a " + str(infer[0]) + " but it's labelled as a " + str(np.argmax(Y_test[count])) ) 
+            plt.imshow( datum.reshape([28,28]) )
+            plt.show()
         count += 1
 
 if __name__ == "__main__":
