@@ -38,7 +38,7 @@ input_array = np.zeros( shape=(1,4) )
 st = config_json["parameters"]["Site_Type"]
 tlh = config_json["parameters"]["x_Temporary_Larval_Habitat"]
 ip = config_json["parameters"]["Initial_Prev"]
-itn = config_json["parameters"]["ITN_Coverage"]
+#itn = config_json["parameters"]["ITN_Coverage"]
 
 input_array[0][0] = st
 input_array[0][1] = tlh
