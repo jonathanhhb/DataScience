@@ -59,7 +59,7 @@ def train_and_save():
     # 9. Fit model on training data
     model = create_neural_network() 
     X_train, X_test, Y_train, Y_test = get_data()
-    model.fit(X_train, Y_train, batch_size=32, nb_epoch=50, verbose=1)
+    model.fit(X_train, Y_train, batch_size=32, nb_epoch=5, verbose=1)
     #Save the model
     # serialize model to JSON
     model_json = model.to_json()
