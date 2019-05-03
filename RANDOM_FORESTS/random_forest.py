@@ -33,8 +33,7 @@ if do_one_hot:
 # Display the first 5 rows of the last 12 columns
     features.iloc[:,5:].head(5)
 
-#output_label = 'actual'
-output_label = 'Y'
+output_label = features.columns[-1]
 
 # Labels are the values we want to predict
 labels = np.array(features[ output_label ])
