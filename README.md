@@ -3,11 +3,10 @@
 MNIST TUTORIAL (Keras/CNNs)
 ===========================
 
-`nrunx --network host --env USER=$USER --env HOME=$HOME --env DISPLAY=$DISPLAY  nvcr.io/idmod/idm_keras:mnist_capable_verified`
-`git clone https://github.com/jonathanhhb/DataScience.git`
-`cd DataScience/MNIST`
-`python3 mnist_tutorial.py --train`
-`python3 mnist_tutorial.py --test`
+`nrunx --network host --env USER=$USER --env HOME=$HOME --env DISPLAY=$DISPLAY nvcr.io/idmod/keras_tf_mnist:latest`  
+`cd DataScience/MNIST`    
+`python3 mnist_tutorial.py --train`  
+`python3 mnist_tutorial.py --test`  
 `
 What just happened?
 This is the famous MNIST 'hello world' of neural networks. At first we train a simple convolutional neural net on the MNIST 
@@ -22,10 +21,10 @@ thought it was vs what it actually is. You can see that those failures are actua
 RANDOM FORESTS
 ==============
 
-`cd <...>/DataScience/RANDOM_FORESTS/`
-`python3 random_forest.py`
-`./generate.py > generated.csv`
-`python3 random_forest.py generated.csv`
+`cd <...>/DataScience/RANDOM_FORESTS/`  
+`python3 random_forest.py`  
+`./generate.py > generated.csv`  
+`python3 random_forest.py generated.csv`  
 
 What just happened?
 This demo shows Random Forests in Python. This does not require Keras, just SciKit Learn. This first example isn't an actual
