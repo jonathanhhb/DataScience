@@ -21,6 +21,7 @@ thought it was vs what it actually is. You can see that those failures are actua
 RANDOM FORESTS
 ==============
 
+`nrunx --network host --env USER=$USER --env HOME=$HOME --env DISPLAY=$DISPLAY nvcr.io/idmod/keras_emulator_fromfile  
 `cd <...>/DataScience/RANDOM_FORESTS/`  
 `python3 random_forest.py`  
 `./generate.py > generated.csv`  
