@@ -78,6 +78,7 @@ errors = abs((predictions - test_labels)/test_labels)
 print('Mean Absolute Error:', round(np.mean(abs_errors), 2), 'degrees.')
 print('Mean % Error:', round(np.mean(errors), 2), 'degrees.')
 
+#importances = sorted(list(rf.feature_importances_))
 importances = list(rf.feature_importances_)
 # List of tuples with variable and importance
 feature_importances = [(feature, round(importance, 2)) for feature, importance in zip(feature_list, importances)]
@@ -87,3 +88,22 @@ feature_importances = sorted(feature_importances, key = lambda x: x[1], reverse 
 # Print out the feature and importances 
 #print('Variable: {:20} Importance: {}'.format(*pair)) for pair in feature_importances
 print( str( feature_importances ) )
+
+# Import matplotlib for plotting 
+import matplotlib.pyplot as plt
+# .. and use magic command for Jupyter Notebooks
+# %matplotlib inline
+
+# Set the style
+#plt.style.use('fivethirtyeight')
+
+# list of x locations for plotting
+x_values = list(range(len(importances)))
+x_labels = [ elem[0] for elem in feature_importances ]
+# Make a bar chart
+plt.bar(x_values, sorted(importances, reverse=True), orientation = 'vertical')
+# Tick labels for x axis
+plt.xticks(np.arange(len(x_values)), x_labels, rotation='vertical')
+# Axis labels and title
+plt.ylabel('Importance'); plt.xlabel('Variable'); plt.title('Variable Importances');
+plt.show()
