@@ -21,9 +21,8 @@ thought it was vs what it actually is. You can see that those failures are actua
 RANDOM FORESTS
 ==============
 
-`nrunx --network host --env USER=$USER --env HOME=$HOME --env DISPLAY=$DISPLAY nvcr.io/idmod/keras_emulator_fromfile  
+`nrunx --network host --env USER=$USER --env HOME=$HOME --env DISPLAY=$DISPLAY nvcr.io/idmod/keras_emulator_fromfile`  
 `cd <...>/DataScience/RANDOM_FORESTS/`  
-`python3 random_forest.py`  
 `./generate.py > generated.csv`  
 `python3 random_forest.py generated.csv`  
 
@@ -32,11 +31,20 @@ This demo shows Random Forests in Python. This does not require Keras, just SciK
 dataset but a numerical generated 'dataset' where the output column is literally a mathematical function of the inputs. This
 is my version of an RF hello world. Next will be the bostonhousing dataset and then the PIMA indian one.
 
+`python3 random_forest.py ../DATA/boston_housing_csv.csv`  
+`python3 random_forest.py ../pima-indians-diabetes.data`  
+`python3 random_forest.py ../DATA/surveillance_data.csv`  
+
+The final one there is a dataset from Brittany related to costs reported from different countries for doing Polio program surveillance.
+
+In each case the final result is a sorted barchart plot of the correlates to the output. Note that Random Forests on this size of data
+really don't need any special hardware.
 
 ---
 
 COMING SOON...
 ==============
+* Emulator
 * Neural Net Regressor
 * Spotify
 * Sentiment Analysis
