@@ -4,19 +4,20 @@ from keras.applications.resnet50 import ResNet50
 from keras.preprocessing import image
 from keras.applications.resnet50 import preprocess_input, decode_predictions
 import numpy as np
-import urllib2
+#from urllib.request import urlopen
+import urllib.request
+import random
 import sys
 
 model = ResNet50(weights='imagenet')
 
-response = urllib2.urlopen( sys.argv[1] )
-image_from_web = response.read( response )
+def downloader(image_url):
+    file_name = random.randrange(1,10000)
+    full_file_name = "/var/tmp/" + str(file_name) + '.jpg'
+    urllib.request.urlretrieve(image_url,full_file_name)
+    return full_file_name
 
-img_path = 'car_battery.jpg'
-with open( "/var/tmp/image_to_rec.jpg", "w" ) as tmp_img:
-    tmp_img.write( image_from_web )
-
-img_path = "/var/tmp/image_to_rec.jpg"
+img_path = downloader( sys.argv[1] )
 img = image.load_img(img_path, target_size=(224, 224))
 x = image.img_to_array(img)
 x = np.expand_dims(x, axis=0)
